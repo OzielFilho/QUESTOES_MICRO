@@ -1,0 +1,273 @@
+CCS PCH C Compiler, Version 5.007, 61971               18-out-20 20:05
+
+               Filename:   C:\Users\Fabio T. Brito\Dropbox\IFCE\Disciplinas_IFCE\Apostilas IFCE\Micro\Programas oficiais\Apostila Micro\P118\P118_adaptado_unity.lst
+
+               ROM used:   448 bytes (1%)
+                           Largest free fragment is 32316
+               RAM used:   27 (1%) at main() level
+                           31 (2%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 31
+
+*
+0000:  GOTO   0176
+*
+0008:  MOVWF  04
+000A:  MOVFF  FD8,05
+000E:  MOVFF  FE0,06
+0012:  MOVLB  0
+0014:  MOVFF  FE9,0C
+0018:  MOVFF  FEA,07
+001C:  MOVFF  FE1,08
+0020:  MOVFF  FE2,09
+0024:  MOVFF  FD9,0A
+0028:  MOVFF  FDA,0B
+002C:  MOVFF  FF3,12
+0030:  MOVFF  FF4,13
+0034:  MOVFF  FFA,14
+0038:  MOVFF  00,0E
+003C:  MOVFF  01,0F
+0040:  MOVFF  02,10
+0044:  MOVFF  03,11
+0048:  BTFSS  F9D.0
+004A:  GOTO   0054
+004E:  BTFSC  F9E.0
+0050:  GOTO   00B8
+0054:  MOVFF  0E,00
+0058:  MOVFF  0F,01
+005C:  MOVFF  10,02
+0060:  MOVFF  11,03
+0064:  MOVFF  0C,FE9
+0068:  MOVFF  07,FEA
+006C:  BSF    07.7
+006E:  MOVFF  08,FE1
+0072:  MOVFF  09,FE2
+0076:  MOVFF  0A,FD9
+007A:  MOVFF  0B,FDA
+007E:  MOVFF  12,FF3
+0082:  MOVFF  13,FF4
+0086:  MOVFF  14,FFA
+008A:  MOVF   04,W
+008C:  MOVFF  06,FE0
+0090:  MOVFF  05,FD8
+0094:  RETFIE 0
+.................... #define led0 pin_d0  
+.................... #define led1 pin_d1  
+.................... #define mpasso pin_d2 
+.................... #define dir pin_d3 
+.................... #include <18F4550.h> 
+.................... //////// Standard Header file for the PIC18F4550 device //////////////// 
+.................... #device PIC18F4550 
+0096:  TBLRD*+
+0098:  MOVF   FF5,F
+009A:  BZ    00B6
+009C:  MOVFF  FF6,1B
+00A0:  MOVFF  FF7,1C
+00A4:  MOVF   FF5,W
+00A6:  BTFSS  F9E.4
+00A8:  BRA    00A6
+00AA:  MOVWF  FAD
+00AC:  MOVFF  1B,FF6
+00B0:  MOVFF  1C,FF7
+00B4:  BRA    0096
+00B6:  RETURN 0
+*
+016E:  DATA 73,0D
+0170:  DATA 0A,00
+0172:  DATA 64,0D
+0174:  DATA 0A,00
+....................  
+.................... #list 
+....................  
+.................... #device adc=10 
+.................... #fuses HS,PLL5,CPUDIV1,nowdt ,USBDIV//Configuração dos fusíveis 48Mhz 
+.................... #use delay(clock=20000000) 
+.................... #use rs232(baud=9600,parity=N,xmit=PIN_C6,rcv=PIN_C7,bits=8) 
+.................... const int32 tm=60536; 
+.................... boolean estado_anterior=0; 
+.................... #int_timer1 
+.................... void funcao_tempo() 
+.................... { 
+.................... static boolean led=1,led2=1; 
+.................... static unsigned int32 n; 
+.................... set_timer1(tm+get_timer1()); 
+*
+00B8:  MOVF   FCE,W
+00BA:  MOVFF  FCF,03
+00BE:  ADDLW  78
+00C0:  MOVWF  1B
+00C2:  MOVLW  EC
+00C4:  ADDWFC FCF,W
+00C6:  CLRF   1D
+00C8:  BCF    FD8.2
+00CA:  BTFSC  FD8.0
+00CC:  INCF   1D,F
+00CE:  MOVWF  FCF
+00D0:  MOVFF  1B,FCE
+.................... n++; 
+00D4:  MOVLW  01
+00D6:  ADDWF  17,F
+00D8:  BTFSC  FD8.0
+00DA:  INCF   18,F
+00DC:  BTFSC  FD8.2
+00DE:  INCF   19,F
+00E0:  BTFSC  FD8.2
+00E2:  INCF   1A,F
+.................... if (n==20) 
+00E4:  MOVF   17,W
+00E6:  SUBLW  14
+00E8:  BNZ   013A
+00EA:  MOVF   18,F
+00EC:  BNZ   013A
+00EE:  MOVF   19,F
+00F0:  BNZ   013A
+00F2:  MOVF   1A,F
+00F4:  BNZ   013A
+.................... { 
+.................... n=0; 
+00F6:  CLRF   1A
+00F8:  CLRF   19
+00FA:  CLRF   18
+00FC:  CLRF   17
+.................... if ((input(pin_b0)==0))  
+00FE:  BSF    F93.0
+0100:  BTFSC  F81.0
+0102:  BRA    013A
+.................... { 
+.................... led=!led;//divide a frequência por 2 poque passa só meio período ligado 
+0104:  BTG    16.1
+.................... output_bit(led1,led); 
+0106:  BTFSC  16.1
+0108:  BRA    010E
+010A:  BCF    F8C.1
+010C:  BRA    0110
+010E:  BSF    F8C.1
+0110:  BCF    F95.1
+.................... output_bit(mpasso,led); 
+0112:  BTFSC  16.1
+0114:  BRA    011A
+0116:  BCF    F8C.2
+0118:  BRA    011C
+011A:  BSF    F8C.2
+011C:  BCF    F95.2
+.................... if (led2==0) {printf("s\r\n");} 
+011E:  BTFSC  16.2
+0120:  BRA    012C
+0122:  MOVLW  6E
+0124:  MOVWF  FF6
+0126:  MOVLW  01
+0128:  MOVWF  FF7
+012A:  RCALL  0096
+.................... if (led2==1) {printf("d\r\n");} 
+012C:  BTFSS  16.2
+012E:  BRA    013A
+0130:  MOVLW  72
+0132:  MOVWF  FF6
+0134:  MOVLW  01
+0136:  MOVWF  FF7
+0138:  RCALL  0096
+....................  
+....................  
+.................... }} 
+.................... if (input(pin_b1)==0) 
+013A:  BSF    F93.1
+013C:  BTFSC  F81.1
+013E:  BRA    0142
+.................... { 
+.................... estado_anterior=1; 
+0140:  BSF    16.0
+.................... } 
+.................... if((input(pin_b1)==1)&&(estado_anterior==1)) 
+0142:  BSF    F93.1
+0144:  BTFSS  F81.1
+0146:  BRA    0168
+0148:  BTFSS  16.0
+014A:  BRA    0168
+.................... { 
+.................... estado_anterior=0; 
+014C:  BCF    16.0
+.................... led2=!led2; 
+014E:  BTG    16.2
+.................... output_bit(dir,led2); 
+0150:  BTFSC  16.2
+0152:  BRA    0158
+0154:  BCF    F8C.3
+0156:  BRA    015A
+0158:  BSF    F8C.3
+015A:  BCF    F95.3
+.................... output_bit(led0,led2); 
+015C:  BTFSC  16.2
+015E:  BRA    0164
+0160:  BCF    F8C.0
+0162:  BRA    0166
+0164:  BSF    F8C.0
+0166:  BCF    F95.0
+.................... } 
+....................  
+....................  
+0168:  BCF    F9E.0
+016A:  GOTO   0054
+.................... } 
+.................... void main() 
+*
+0176:  CLRF   FF8
+0178:  BCF    FD0.7
+017A:  BSF    07.7
+017C:  BSF    FB8.3
+017E:  MOVLW  08
+0180:  MOVWF  FAF
+0182:  MOVLW  02
+0184:  MOVWF  FB0
+0186:  MOVLW  A6
+0188:  MOVWF  FAC
+018A:  MOVLW  90
+018C:  MOVWF  FAB
+018E:  BCF    16.0
+0190:  BSF    16.1
+0192:  BSF    16.2
+0194:  MOVF   FC1,W
+0196:  ANDLW  C0
+0198:  IORLW  0F
+019A:  MOVWF  FC1
+019C:  MOVLW  07
+019E:  MOVWF  FB4
+01A0:  CLRF   17
+01A2:  CLRF   18
+01A4:  CLRF   19
+01A6:  CLRF   1A
+.................... { 
+.................... port_b_pullups(TRUE); 
+01A8:  BCF    FF1.7
+.................... output_d(0); 
+01AA:  CLRF   F95
+01AC:  CLRF   F8C
+.................... enable_interrupts(GLOBAL); 
+01AE:  MOVLW  C0
+01B0:  IORWF  FF2,F
+.................... enable_interrupts(INT_timer1); 
+01B2:  BSF    F9D.0
+.................... setup_timer_1(T1_INTERNAL|T1_DIV_BY_2); 
+01B4:  MOVLW  95
+01B6:  MOVWF  FCD
+.................... set_timer1(tm);                                              
+01B8:  MOVLW  EC
+01BA:  MOVWF  FCF
+01BC:  MOVLW  78
+01BE:  MOVWF  FCE
+.................... while(true) 
+.................... {  
+01C0:  BRA    01C0
+....................  
+.................... } 
+.................... } 
+....................  
+01C2:  SLEEP 
+
+Configuration Fuses:
+   Word  1: CC24   PLL5 CPUDIV1 USBDIV HS FCMEN IESO
+   Word  2: 1E3E   PUT BROWNOUT BORV21 VREGEN NOWDT WDT32768
+   Word  3: 8700   CCP2C1 PBADEN LPT1OSC MCLR
+   Word  4: 00A1   STVREN NOLVP ICSP2 NOXINST NODEBUG
+   Word  5: C00F   NOPROTECT NOCPB NOCPD
+   Word  6: E00F   NOWRT NOWRTC NOWRTB NOWRTD
+   Word  7: 400F   NOEBTR NOEBTRB

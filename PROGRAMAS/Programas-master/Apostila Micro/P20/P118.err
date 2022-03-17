@@ -1,0 +1,2 @@
+*** Error 58 "P118.c" Line 30(1,2): Expecting a close paren
+*** Error 132 "P118.c" Line 31(11,12): STDOUT not defined (may be missing #USE RS232)  ::
