@@ -11,16 +11,17 @@ void funcao_tempo()
 {float ad1;static boolean led=1;static unsigned int32 n;
 set_timer1(tm+get_timer1());
 n++;
-if (n==5)
-{n=0;
-led=!led;
-output_bit(led1,led);
-}
- if ((input(pin_b0)==0)^(input(pin_b1)==0)) 
+// if (n==5)
+// {n=0;
+// led=!led;
+// output_bit(led1,led);
+// }
+ if ((input(pin_b0)==0)^(input(pin_b1)==0))
 {output_high(led0);}
 ad1=read_adc();
 delay_us(100);
- if (ad1<200)  { output_low(led0);  }}
+//  if (ad1<200)  { output_low(led0);  }
+ }
 void main()
 {float ad1;
 char selection;
@@ -48,4 +49,3 @@ while(true)
   }
 else  {output_low(led0);
   }}}
-
